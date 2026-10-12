@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10151f"><meta name="description" content="IPL Match Lab — explore historical IPL match data and experimental win probabilities.">
+  <title>IPL Match Lab — Match Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#predict"><span class="brand-mark">🏏</span><span><b>IPL MATCH LAB</b><small>CRICKET ANALYTICS</small></span></a>
+      <div class="side-label">WORKSPACE</div>
+      <nav class="nav" aria-label="Main navigation">
+        <button class="nav-item active" data-tab="predict"><span>◉</span> Match predictor</button>
+        <button class="nav-item" data-tab="insights"><span>▥</span> Season insights</button>
+        <button class="nav-item" data-tab="report"><span>⌁</span> Model report</button>
+      </nav>
+      <div class="sidebar-bottom"><span class="status-dot"></span><span id="systemStatus">Connecting to model…</span><div class="side-foot">BUILT FOR CRICKET FANS<br>NOT A BETTING TOOL</div></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div><div class="eyebrow">CRICKET • DATA • PROBABILITY</div><h1 id="pageTitle">Match predictor</h1></div><div class="top-meta"><span class="live-dot"></span><span>MODEL STATUS</span><b id="modelStatus">Checking</b></div></header>
+      <section class="view active" id="view-predict">
+        <div class="hero"><div><div class="hero-kicker">THE GAME, THROUGH DATA</div><h2>Every match has a story.<br><em>Explore the numbers.</em></h2><p>Compare historical team performance and get an experimental win-probability estimate based on toss, venue and recent form.</p><div class="hero-tags"><span>Historical dataset</span><span>Probability estimate</span><span>Transparent limitations</span></div></div><div class="hero-ball"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="ball">🏏</div><div class="hero-stat"><small>MATCHES IN DATA</small><b id="heroMatches">—</b></div></div></div>
+        <div class="section-head"><div><div class="eyebrow">01 / MATCH SETUP</div><h3>Build your match</h3><p>Choose the teams, toss outcome and venue to generate an estimate.</p></div><span class="step-pill">5 inputs</span></div>
+        <div class="predict-grid">
+          <div class="panel setup-panel">
+            <div class="panel-title"><span class="icon-box">⚔</span><div><h4>Match conditions</h4><p>Set up a hypothetical IPL match</p></div></div>
+            <form id="predictForm">
+              <div class="team-grid"><label class="field"><span>TEAM A</span><select id="teamA" required></select></label><label class="field"><span>TEAM B</span><select id="teamB" required></select></label></div>
+              <div class="field"><span>WHO WON THE TOSS?</span><div class="segmented" id="tossChoices"><button type="button" data-value="a" class="selected">Team A</button><button type="button" data-value="b">Team B</button></div></div>
+              <div class="field"><span>TOSS WINNER CHOSE TO</span><div class="segmented" id="decisionChoices"><button type="button" data-value="bat" class="selected">🏏 Bat first</button><button type="button" data-value="field">↗ Field first</button></div></div>
+              <label class="field"><span>VENUE</span><select id="venue" required></select></label>
+              <div class="form-error" id="formError" role="alert"></div>
+              <button class="primary-btn" id="predictBtn" type="submit"><span>Generate prediction</span><span>↗</span></button>
+              <p class="fine-print">Estimates are based on historical data and are not guarantees, financial advice or betting advice.</p>
+            </form>
+          </div>
+          <div class="panel result-panel" id="resultPanel"><div class="empty-result"><div class="empty-icon">✳</div><div class="eyebrow">YOUR MATCH, YOUR CALL</div><h3>Ready when you are</h3><p>Complete the match setup and select <b>Generate prediction</b> to see how the model weighs the historical signals.</p><div class="empty-lines"><span></span><span></span><span></span></div></div></div>
+        </div>
+        <div class="notice"><span class="notice-icon">ⓘ</span><div><b>Know what this model can — and can’t — do</b><p>The supplied dataset covers IPL seasons from 2008–2019. This is a learning project, not a live-match forecasting system. It does not include current squads, player availability, pitch conditions or weather, and has not been proven to outperform a simple baseline.</p></div></div>
+      </section>
+      <section class="view" id="view-insights">
+        <div class="section-head"><div><div class="eyebrow">02 / DATA EXPLORER</div><h3>What does history say?</h3><p>A snapshot of the matches included in this dataset.</p></div><span class="step-pill" id="insightsSeasons">2008–2019 data</span></div>
+        <div class="metric-grid"><div class="metric-card"><span>MATCHES ANALYSED</span><strong id="metricMatches">—</strong><small>All rows in supplied dataset</small></div><div class="metric-card"><span>CHASE TEAM WINS</span><strong id="metricChase">—</strong><small id="chaseCI">Historical win share</small></div><div class="metric-card"><span>TOSS WINNER WINS</span><strong id="metricToss">—</strong><small id="tossCI">Historical win share</small></div></div>
+        <div class="panel chart-panel"><div class="panel-title"><div><h4>Win rate by team</h4><p>Recorded wins divided by matches played in this dataset</p></div><span class="chart-badge">TEAM COMPARISON</span></div><div id="teamChart" class="bar-chart"></div><p class="chart-note">Smaller sample sizes can make some team rates misleading. This is historical data, not a ranking of current squads.</p></div>
+        <div class="panel chart-panel"><div class="panel-title"><div><h4>Chasing win rate by season</h4><p>Share of matches won by the team batting second</p></div><span class="chart-badge">SEASON TREND</span></div><div id="seasonChart" class="season-chart"></div></div>
+      </section>
+      <section class="view" id="view-report">
+        <div class="section-head"><div><div class="eyebrow">03 / MODEL TRANSPARENCY</div><h3>Trust the process, inspect the limits</h3><p>Walk-forward evaluation: train on earlier seasons, test on a later season.</p></div><span class="step-pill">OUT-OF-SEASON TEST</span></div>
+        <div class="metric-grid two"><div class="metric-card"><span>MODEL ACCURACY</span><strong id="modelAccuracy">—</strong><small>Across tested seasons</small></div><div class="metric-card"><span>BASELINE ACCURACY</span><strong id="baselineAccuracy">—</strong><small>Simple majority-class guess</small></div></div>
+        <div class="panel chart-panel"><div class="panel-title"><div><h4>Model vs baseline</h4><p>Per-season test accuracy. Higher is not proof of robust predictive value.</p></div><span class="chart-badge">2012–2019</span></div><div id="reportChart" class="report-chart"></div></div>
+        <div class="notice"><span class="notice-icon">!</span><div><b>Important model caveats</b><p>Data ends in 2019 and contains roughly 750 matches. Current teams and conditions may differ. Probabilities can be poorly calibrated, and the original evaluation did not establish a reliable advantage over a baseline. Do not use the output for betting or high-stakes decisions.</p></div></div>
+      </section>
+      <footer><span>IPL MATCH LAB <i>•</i> EDUCATIONAL PROJECT</span><span>Historical data only · <a href="/api/health" target="_blank" rel="noreferrer">API health</a></span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="/static/app.js" defer></script>
+</body></html>
